@@ -16,7 +16,7 @@ class Workout {
 
     this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${
       months[this.date.getMonth()]
-    } ${this.date.getDate()}`;
+    } ${this.date.getDate()}, ${this.date.getFullYear()}`;
   }
 
   click() {
@@ -72,8 +72,8 @@ class App {
   #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
-  sortedStateDistance = true;
-  sortedStateDuration = true;
+  sortedStateDistance = 1;
+  sortedStateDuration = 1;
 
   constructor() {
     //get users position
@@ -318,35 +318,53 @@ class App {
   }
 
   _sortWorkoutsByDistance() {
+    let sortedWorkoutsDistance;
+
     let siblings = this._getSiblings(form)
     siblings.map(el => el.remove())
 
     const workoutsCopy = [...this.#workouts]
 
-    const sortedWorkoutsDistance = this.sortedStateDistance ? workoutsCopy.sort((a, b) => a.distance - b.distance) : workoutsCopy
+    if(this.sortedStateDistance === 0){
+        this.sortedStateDistance++
+        sortedWorkoutsDistance = workoutsCopy
+    }else if(this.sortedStateDistance === 1) {
+        sortedWorkoutsDistance = workoutsCopy.sort((a, b) => a.distance - b.distance)
+        this.sortedStateDistance++
+    }else if(this.sortedStateDistance === 2){
+        sortedWorkoutsDistance = workoutsCopy.sort((a, b) => b.distance - a.distance)
+        this.sortedStateDistance = 0;
+    }
 
     sortedWorkoutsDistance.forEach(workout => {
         this._renderWorkout(workout);
     })
     
-    this.sortedStateDistance = !this.sortedStateDistance
-    console.log(this.sortedStateDistance);
   }
 
   _sortWorkoutsByDuration() {
+    let sortedWorkoutsDuration;
+
     let siblings = this._getSiblings(form)
     siblings.map(el => el.remove())
 
     const workoutsCopy = [...this.#workouts]
 
-    const sortedWorkoutsDuration = this.sortedStateDuration ? workoutsCopy.sort((a, b) => a.duration - b.duration) : workoutsCopy
+    if(this.sortedStateDuration === 0){
+        this.sortedStateDuration++
+        sortedWorkoutsDuration = workoutsCopy
+    }else if(this.sortedStateDuration === 1) {
+        sortedWorkoutsDuration = workoutsCopy.sort((a, b) => a.duration - b.duration)
+        this.sortedStateDuration++
+    }else if(this.sortedStateDuration === 2){
+        sortedWorkoutsDuration = workoutsCopy.sort((a, b) => b.duration - a.duration)
+        this.sortedStateDuration = 0;
+    }
 
     sortedWorkoutsDuration.forEach(workout => {
         this._renderWorkout(workout);
     })
     
-    this.sortedStateDuration = !this.sortedStateDuration
-    console.log(this.sortedStateDuration);
   }
 
   _getSiblings = function(e){
@@ -364,7 +382,6 @@ class App {
       }
       return siblings;
   }
-
 
 }
 

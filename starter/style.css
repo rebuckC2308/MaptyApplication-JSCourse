@@ -233,3 +233,7 @@ a:visited {
 .sort__text {
     font-size: 14px;
 }
+
+.sort {
+  margin-left: auto ;
+}
