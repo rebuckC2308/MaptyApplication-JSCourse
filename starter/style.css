@@ -218,3 +218,18 @@ a:visited {
 .cycling-popup .leaflet-popup-content-wrapper {
   border-left: 5px solid var(--color-brand--1);
 }
+
+.btn--sort {
+    border-radius: 4px;
+    margin: 8px;
+    color: var(--color-dark--1);
+    border-color: var(--color-light--2);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+
+  }
+
+.sort__text {
+    font-size: 14px;
+}

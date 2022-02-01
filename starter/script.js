@@ -64,12 +64,16 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+const btnSortDistance = document.querySelector('.btn--sort--distance');
+const btnSortDuration = document.querySelector('.btn--sort--duration');
 
 class App {
   #map;
   #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
+  sortedStateDistance = true;
+  sortedStateDuration = true;
 
   constructor() {
     //get users position
@@ -82,7 +86,10 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
-  }
+    btnSortDistance.addEventListener('click', this._sortWorkoutsByDistance.bind(this));
+    btnSortDuration.addEventListener('click', this._sortWorkoutsByDuration.bind(this));
+  };
+
 
   _getPosition() {
     if (navigator.geolocation) {
@@ -296,15 +303,69 @@ class App {
 
     this.#workouts = data;
 
+    
+
     this.#workouts.forEach(work => {
       this._renderWorkout(work);
     });
+
+    console.log(this.#workouts)
   }
 
   reset() {
     localStorage.removeItem('workouts');
     location.reload();
   }
+
+  _sortWorkoutsByDistance() {
+    let siblings = this._getSiblings(form)
+    siblings.map(el => el.remove())
+
+    const workoutsCopy = [...this.#workouts]
+
+    const sortedWorkoutsDistance = this.sortedStateDistance ? workoutsCopy.sort((a, b) => a.distance - b.distance) : workoutsCopy
+
+    sortedWorkoutsDistance.forEach(workout => {
+        this._renderWorkout(workout);
+    })
+    
+    this.sortedStateDistance = !this.sortedStateDistance
+    console.log(this.sortedStateDistance);
+  }
+
+  _sortWorkoutsByDuration() {
+    let siblings = this._getSiblings(form)
+    siblings.map(el => el.remove())
+
+    const workoutsCopy = [...this.#workouts]
+
+    const sortedWorkoutsDuration = this.sortedStateDuration ? workoutsCopy.sort((a, b) => a.duration - b.duration) : workoutsCopy
+
+    sortedWorkoutsDuration.forEach(workout => {
+        this._renderWorkout(workout);
+    })
+    
+    this.sortedStateDuration = !this.sortedStateDuration
+    console.log(this.sortedStateDuration);
+  }
+
+  _getSiblings = function(e){
+      let siblings = [];
+      if(!e.parentNode) {
+          return siblings;
+      }
+      let sibling = e.parentNode.firstChild;
+
+      while(sibling){
+          if(sibling.nodeType == 1 && sibling !== e){
+              siblings.push(sibling);
+          }
+          sibling = sibling.nextSibling;
+      }
+      return siblings;
+  }
+
+
 }
 
 const app = new App();
